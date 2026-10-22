@@ -1,0 +1,27 @@
+{
+  "page": "IndustryFaqPage",
+  "route": "/",
+  "dataSources": [
+    {
+      "name": "mockFaqItemsData",
+      "shape": "array",
+      "endpoint": { "method": "GET", "path": "/api/industry-scenario/faqs" },
+      "queryParams": ["keyword", "status"]
+    },
+    {
+      "name": "mockReferenceKnowledgeData",
+      "shape": "array",
+      "endpoint": { "method": "GET", "path": "/api/industry-scenario/faq-references" },
+      "queryParams": ["scope"]
+    }
+  ],
+  "actions": [
+    { "handler": "handleFetchFaqItems", "endpoint": { "method": "GET", "path": "/api/industry-scenario/faqs" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleFetchReferenceKnowledge", "endpoint": { "method": "GET", "path": "/api/industry-scenario/faq-references" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handlePreviewGeneratedFaq", "endpoint": { "method": "POST", "path": "/api/industry-scenario/faqs/ai-preview" }, "requestFrom": "body", "responseShape": "array" },
+    { "handler": "handleCreateFaqItems", "endpoint": { "method": "POST", "path": "/api/industry-scenario/faqs/batch" }, "requestFrom": "body", "responseShape": "array" },
+    { "handler": "handleUpdateFaqItem", "endpoint": { "method": "PATCH", "path": "/api/industry-scenario/faqs/{id}" }, "requestFrom": "body", "responseShape": "object" },
+    { "handler": "handlePublishFaqItem", "endpoint": { "method": "PATCH", "path": "/api/industry-scenario/faqs/{id}/publish" }, "requestFrom": "param", "responseShape": "object" },
+    { "handler": "handleDeleteFaqItem", "endpoint": { "method": "DELETE", "path": "/api/industry-scenario/faqs/{id}" }, "requestFrom": "param", "responseShape": "none" }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "page": "AttributeTemplatePage",
+  "route": "/attribute-templates",
+  "dataSources": [
+    {
+      "name": "mockAttributeTemplatesData",
+      "shape": "array",
+      "endpoint": { "method": "GET", "path": "/api/product/attribute-templates" },
+      "queryParams": ["keyword"]
+    },
+    {
+      "name": "mockIndustryProductsData",
+      "shape": "array",
+      "endpoint": { "method": "GET", "path": "/api/industry-products" },
+      "queryParams": ["industryPath"]
+    },
+    {
+      "name": "mockIndustryAttributesData",
+      "shape": "array",
+      "endpoint": { "method": "GET", "path": "/api/industry-products/attributes" },
+      "queryParams": ["productId"]
+    },
+    {
+      "name": "mockIndustrySpecsData",
+      "shape": "array",
+      "endpoint": { "method": "GET", "path": "/api/industry-products/specifications" },
+      "queryParams": ["productId"]
+    }
+  ],
+  "actions": [
+    { "handler": "handleFetchAttributeTemplates", "endpoint": { "method": "GET", "path": "/api/product/attribute-templates" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleFetchIndustryProducts", "endpoint": { "method": "GET", "path": "/api/industry-products" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleFetchIndustryAttributes", "endpoint": { "method": "GET", "path": "/api/industry-products/attributes" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleFetchIndustrySpecs", "endpoint": { "method": "GET", "path": "/api/industry-products/specifications" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleCreateAttributeTemplate", "endpoint": { "method": "POST", "path": "/api/product/attribute-templates" }, "requestFrom": "body", "responseShape": "object" },
+    { "handler": "handleUpdateAttributeTemplate", "endpoint": { "method": "PATCH", "path": "/api/product/attribute-templates/{id}" }, "requestFrom": "body", "responseShape": "object" }
+  ]
+}
