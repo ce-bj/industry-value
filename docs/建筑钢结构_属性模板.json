@@ -1,0 +1,236 @@
+{
+  "templateName": "建筑钢结构_属性模板",
+  "attributeField": [
+    {
+      "code": "name",
+      "attributeName": "产品名称",
+      "attributeType": "",
+      "attributeValue": ""
+    },
+    {
+      "code": "image",
+      "attributeName": "产品图片",
+      "attributeType": "",
+      "attributeValue": ""
+    },
+    {
+      "code": "video",
+      "attributeName": "产品视频",
+      "attributeType": "",
+      "attributeValue": ""
+    },
+    {
+      "code": "code",
+      "attributeName": "编号",
+      "attributeType": "",
+      "attributeValue": ""
+    },
+    {
+      "code": "weight",
+      "attributeName": "重量",
+      "attributeType": "",
+      "attributeValue": "",
+      "unit": "kg"
+    },
+    {
+      "code": "volume",
+      "attributeName": "体积",
+      "attributeType": "",
+      "attributeValue": ""
+    },
+    {
+      "code": "price",
+      "attributeName": "市场价",
+      "attributeType": "",
+      "attributeValue": "",
+      "unit": "元/吨"
+    },
+    {
+      "code": "retailPrice",
+      "attributeName": "零售价",
+      "attributeType": "",
+      "attributeValue": "",
+      "unit": "元/吨"
+    },
+    {
+      "code": "stock",
+      "attributeName": "库存",
+      "attributeType": "",
+      "attributeValue": "",
+      "unit": "吨"
+    },
+    {
+      "code": "moq",
+      "attributeName": "最低起订量",
+      "attributeType": "",
+      "attributeValue": "",
+      "unit": "吨"
+    },
+    {
+      "code": "deliveryTime",
+      "attributeName": "交货期",
+      "attributeType": "",
+      "attributeValue": "",
+      "unit": "天"
+    },
+    {
+      "code": "file",
+      "attributeName": "产品附件",
+      "attributeType": "",
+      "attributeValue": ""
+    },
+    {
+      "code": "content",
+      "attributeName": "产品描述",
+      "attributeType": "",
+      "attributeValue": ""
+    },
+    {
+      "code": "summary",
+      "attributeName": "概要描述",
+      "attributeType": "",
+      "attributeValue": ""
+    },
+    {
+      "code": "panorama",
+      "attributeName": "360°度全景展示",
+      "attributeType": "",
+      "attributeValue": ""
+    },
+    {
+      "code": "",
+      "attributeName": "型号规格",
+      "attributeType": "文本",
+      "attributeValue": ""
+    },
+    {
+      "code": "",
+      "attributeName": "品牌",
+      "attributeType": "下拉单选",
+      "attributeValue": "示例品牌A,示例品牌B,示例品牌C,示例品牌D,示例品牌E,示例品牌F"
+    },
+    {
+      "code": "",
+      "attributeName": "构件类型",
+      "attributeType": "下拉单选",
+      "attributeValue": "焊接H型钢,热轧H型钢,箱型柱,十字柱,圆钢管,方钢管,钢桁架,檩条,C型钢,Z型钢"
+    },
+    {
+      "code": "",
+      "attributeName": "钢材牌号",
+      "attributeType": "下拉单选",
+      "attributeValue": "Q235B,Q355B,Q355C,Q390B,Q420B,Q460C,Q460GJ,Q550D"
+    },
+    {
+      "code": "",
+      "attributeName": "截面高度",
+      "attributeType": "数字",
+      "attributeValue": "",
+      "unit": "mm"
+    },
+    {
+      "code": "",
+      "attributeName": "翼缘宽度",
+      "attributeType": "数字",
+      "attributeValue": "",
+      "unit": "mm"
+    },
+    {
+      "code": "",
+      "attributeName": "翼缘厚度",
+      "attributeType": "数字",
+      "attributeValue": "",
+      "unit": "mm"
+    },
+    {
+      "code": "",
+      "attributeName": "腹板厚度",
+      "attributeType": "数字",
+      "attributeValue": "",
+      "unit": "mm"
+    },
+    {
+      "code": "",
+      "attributeName": "长度",
+      "attributeType": "数字",
+      "attributeValue": "",
+      "unit": "mm"
+    },
+    {
+      "code": "",
+      "attributeName": "单重",
+      "attributeType": "数字",
+      "attributeValue": "",
+      "unit": "kg"
+    },
+    {
+      "code": "",
+      "attributeName": "执行标准",
+      "attributeType": "下拉单选",
+      "attributeValue": "GB/T 11263,GB/T 1591,GB 50017,GB 50205,JGJ 99,GB/T 19879,GB/T 5313,ASTM A572,EN 10025"
+    },
+    {
+      "code": "",
+      "attributeName": "表面处理",
+      "attributeType": "下拉多选",
+      "attributeValue": "抛丸除锈,喷砂除锈,热浸镀锌,冷镀锌,环氧富锌底漆,防火涂料,素面(不处理)"
+    },
+    {
+      "code": "",
+      "attributeName": "耐火等级",
+      "attributeType": "下拉单选",
+      "attributeValue": "一级(≥3.0h),二级(≥2.5h),三级(≥2.0h),四级(≥1.5h),无要求"
+    },
+    {
+      "code": "",
+      "attributeName": "抗震设防烈度",
+      "attributeType": "下拉单选",
+      "attributeValue": "6度,7度,8度,9度,无要求"
+    },
+    {
+      "code": "",
+      "attributeName": "适用结构",
+      "attributeType": "下拉多选",
+      "attributeValue": "门式刚架,钢框架,网架结构,桁架结构,空间管结构,钢混组合结构,塔桅结构,桥梁钢结构"
+    },
+    {
+      "code": "",
+      "attributeName": "屈服强度",
+      "attributeType": "数字",
+      "attributeValue": "",
+      "unit": "MPa"
+    },
+    {
+      "code": "",
+      "attributeName": "抗拉强度",
+      "attributeType": "数字",
+      "attributeValue": "",
+      "unit": "MPa"
+    },
+    {
+      "code": "",
+      "attributeName": "伸长率",
+      "attributeType": "数字",
+      "attributeValue": "",
+      "unit": "%"
+    },
+    {
+      "code": "",
+      "attributeName": "含碳量等级",
+      "attributeType": "下拉单选",
+      "attributeValue": "低碳钢(C≤0.25%),中碳钢(0.25%<C≤0.6%),高碳钢(C>0.6%)"
+    },
+    {
+      "code": "",
+      "attributeName": "产品状态",
+      "attributeType": "下拉单选",
+      "attributeValue": "在售,预售,停产,定制"
+    },
+    {
+      "code": "",
+      "attributeName": "供应商",
+      "attributeType": "文本",
+      "attributeValue": ""
+    }
+  ]
+}
