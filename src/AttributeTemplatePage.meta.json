@@ -18,13 +18,13 @@
       "name": "mockIndustryAttributesData",
       "shape": "array",
       "endpoint": { "method": "GET", "path": "/api/industry-products/attributes" },
-      "queryParams": ["productId"]
+      "queryParams": ["productId", "category"]
     },
     {
       "name": "mockIndustrySpecsData",
       "shape": "array",
       "endpoint": { "method": "GET", "path": "/api/industry-products/specifications" },
-      "queryParams": ["productId"]
+      "queryParams": ["productId", "category"]
     }
   ],
   "actions": [

@@ -8,7 +8,7 @@ const primaryNavigation = [
   { icon: Search, label: 'SEO优化' }, { icon: LayoutGrid, label: '可视化管理' },
   { icon: Globe2, label: '国际化翻译' }, { icon: ShieldCheck, label: '网站设置' },
 ];
-const contentNavigation = ['企业概况', '新闻资讯', '图册展示', '视频展示', '企业网点', '常见问题', '文件下载', '友情链接', '领导介绍', '发展历程', '荣誉资质'];
+const contentNavigation = ['企业概况', '新闻资讯', '图册展示', '视频展示', '企业网点', '常见问题', '文件下载', '友情链接', '领导介绍', '发展历程', '荣誉资质', '客户案例'];
 const productNavigation = ['产品列表', '分类管理', '属性模板', '标记管理', '品牌管理', '筛选管理', '橱窗管理'];
 
 export function PortalShell({ children, section = 'content', pageTitle }: { children: ReactNode; section?: 'content' | 'product'; pageTitle?: string }) {

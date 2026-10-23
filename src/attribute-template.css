@@ -41,9 +41,16 @@
 .picker-body{display:grid;grid-template-columns:220px minmax(0,1fr);flex:1;min-height:0}
 .picker-product-tree{overflow:auto;border-right:1px solid #e7ebf2;background:#fcfdff;padding:13px 9px}
 .picker-pane-heading{padding:0 12px 12px;color:#959eab;font-size:11px}
+.picker-product-tree>.ui-input{height:30px;margin:0 0 10px;font-size:11px}
+.picker-all-category{width:100%;height:31px;padding:0 10px;text-align:left;background:transparent;border:0;border-radius:3px;color:#586477;font-size:12px}
+.picker-all-category:hover,.picker-all-category.is-active{background:#edf4ff;color:#426ee2}
 .picker-category{margin-bottom:7px}
+.picker-category-row{display:flex;align-items:center}
+.picker-category-expand{width:24px;height:30px;display:flex;align-items:center;justify-content:center;flex:none;border:0;background:transparent;color:#8995a6}
 .picker-category-button,.picker-product{display:flex;align-items:center;width:100%;min-height:32px;border:0;background:none;text-align:left;color:#485465;font-size:12px}
-.picker-category-button{gap:5px;padding:0 10px;font-weight:600}
+.picker-category-button{gap:5px;padding:0 5px;font-weight:600;border-radius:3px}
+.picker-category-button:hover,.picker-category-button.is-active{background:#edf4ff;color:#426ee2}
+.picker-category-empty{padding:12px 9px;color:#9aa4b2;font-size:11px}
 .picker-product{padding:0 13px 0 29px;border-radius:3px}
 .picker-product:hover,.picker-product.is-active{background:#edf4ff;color:#426ee2}
 .picker-options{display:flex;flex-direction:column;min-width:0;min-height:0}

@@ -9,15 +9,15 @@
       "queryParams": ["keyword", "status"]
     },
     {
-      "name": "mockReferenceKnowledgeData",
+      "name": "mockFaqSourceItemsData",
       "shape": "array",
-      "endpoint": { "method": "GET", "path": "/api/industry-scenario/faq-references" },
-      "queryParams": ["scope"]
+      "endpoint": { "method": "GET", "path": "/api/industry-scenario/faq-sources" },
+      "queryParams": ["menu"]
     }
   ],
   "actions": [
     { "handler": "handleFetchFaqItems", "endpoint": { "method": "GET", "path": "/api/industry-scenario/faqs" }, "requestFrom": "param", "responseShape": "array" },
-    { "handler": "handleFetchReferenceKnowledge", "endpoint": { "method": "GET", "path": "/api/industry-scenario/faq-references" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleFetchFaqSources", "endpoint": { "method": "GET", "path": "/api/industry-scenario/faq-sources" }, "requestFrom": "param", "responseShape": "array" },
     { "handler": "handlePreviewGeneratedFaq", "endpoint": { "method": "POST", "path": "/api/industry-scenario/faqs/ai-preview" }, "requestFrom": "body", "responseShape": "array" },
     { "handler": "handleCreateFaqItems", "endpoint": { "method": "POST", "path": "/api/industry-scenario/faqs/batch" }, "requestFrom": "body", "responseShape": "array" },
     { "handler": "handleUpdateFaqItem", "endpoint": { "method": "PATCH", "path": "/api/industry-scenario/faqs/{id}" }, "requestFrom": "body", "responseShape": "object" },

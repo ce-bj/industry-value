@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import IndustryFaqPage from './IndustryFaqPage';
 import AttributeTemplatePage from './AttributeTemplatePage';
 import './styles.css';
+import './faq-generator.css';
 import './attribute-template.css';
 
 const isAttributePage = window.location.pathname === '/attribute-templates';
