@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-启动后打开 <http://localhost:1235/> 查看常见问题，打开 <http://localhost:1235/attribute-templates> 查看属性模板。若 1235 端口已被占用，Vite 会在终端显示实际使用的端口；请以终端地址为准。
+启动后打开 <http://localhost:1235/> 查看常见问题，打开 <http://localhost:1235/attribute-templates/> 查看属性模板。若 1235 端口已被占用，Vite 会在终端显示实际使用的端口；请以终端地址为准。
 
 ## 测试与构建
 
@@ -22,6 +22,14 @@ npm test          # 检查 FAQ 按来源逐条生成与行业属性/规格导入
 npm run build     # TypeScript 检查并构建到 dist/
 npm run preview   # 在 http://localhost:4173/ 预览构建结果
 ```
+
+如需用 Python 静态服务器共享构建结果，先运行 `npm run build`，再运行：
+
+```bash
+python3 -m http.server 4180 --bind 0.0.0.0 --directory dist
+```
+
+构建时会生成 `dist/attribute-templates/index.html`，使静态服务器也能打开“产品管理 → 属性模板”并支持刷新该页面。更新代码后需重新构建并重新发布 `dist/`。
 
 这是前端交互原型，数据保存在页面内存中；刷新后会恢复示例数据。原型不连接真实 AI 模型或后台接口。
 

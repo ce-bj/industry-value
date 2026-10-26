@@ -24,10 +24,10 @@ export function PortalShell({ children, section = 'content', pageTitle }: { chil
     <div className="portal-body">
       <aside className="portal-primary-nav" aria-label="网站管理导航">
         <div className="portal-site"><span className="flag">🇨🇳</span><strong>中文简体</strong><span className="flash">ϟ</span></div>
-        {primaryNavigation.map(item => item.label === '产品管理' || item.label === '内容管理' ? <a key={item.label} href={item.label === '产品管理' ? '/attribute-templates' : '/'} className={`portal-primary-item ${item.label === (isProduct ? '产品管理' : '内容管理') ? 'is-active' : ''}`}><item.icon size={14} strokeWidth={1.7} /><span>{item.label}</span></a> : <div key={item.label} className="portal-primary-item"><item.icon size={14} strokeWidth={1.7} /><span>{item.label}</span></div>)}
+        {primaryNavigation.map(item => item.label === '产品管理' || item.label === '内容管理' ? <a key={item.label} href={item.label === '产品管理' ? '/attribute-templates/' : '/'} className={`portal-primary-item ${item.label === (isProduct ? '产品管理' : '内容管理') ? 'is-active' : ''}`}><item.icon size={14} strokeWidth={1.7} /><span>{item.label}</span></a> : <div key={item.label} className="portal-primary-item"><item.icon size={14} strokeWidth={1.7} /><span>{item.label}</span></div>)}
       </aside>
       <aside className="portal-secondary-nav" aria-label={`${isProduct ? '产品' : '内容'}管理导航`}>
-        {navigation.map(item => <div key={item} className="portal-secondary-group">{item === currentItem ? <a href={isProduct ? '/attribute-templates' : '/'} className="portal-secondary-child is-active">{item}</a> : <div className="portal-secondary-item"><span>{item}</span>{!isProduct && <ChevronDown size={13} />}</div>}</div>)}
+        {navigation.map(item => <div key={item} className="portal-secondary-group">{item === currentItem ? <a href={isProduct ? '/attribute-templates/' : '/'} className="portal-secondary-child is-active">{item}</a> : <div className="portal-secondary-item"><span>{item}</span>{!isProduct && <ChevronDown size={13} />}</div>}</div>)}
       </aside>
       <main className="portal-main">
         <div className="portal-breadcrumb"><span className="crumb-pin">♧</span><span>首页</span><span className="crumb-sep">›</span><span>网站管理</span><span className="crumb-sep">›</span><span>{isProduct ? '数字门户全球营销版' : '生物药行业解决方案'}</span><span className="crumb-sep">›</span><span>{isProduct ? '产品管理' : '内容管理'}</span><span className="crumb-sep">›</span><strong>{pageTitle || currentItem}</strong><span className="breadcrumb-help"><CircleHelp size={14} /> 查看本页帮助</span></div>
