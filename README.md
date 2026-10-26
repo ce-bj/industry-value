@@ -23,13 +23,13 @@ npm run build     # TypeScript 检查并构建到 dist/
 npm run preview   # 在 http://localhost:4173/ 预览构建结果
 ```
 
-如需用 Python 静态服务器共享构建结果，先运行 `npm run build`，再运行：
+`dist/` 已纳入 Git。若远端只提供静态文件，拉取仓库后无需安装依赖或重新构建，直接在仓库目录运行：
 
 ```bash
 python3 -m http.server 4180 --bind 0.0.0.0 --directory dist
 ```
 
-构建时会生成 `dist/attribute-templates/index.html`，使静态服务器也能打开“产品管理 → 属性模板”并支持刷新该页面。更新代码后需重新构建并重新发布 `dist/`。
+`dist/attribute-templates/index.html` 使静态服务器也能打开“产品管理 → 属性模板”并支持刷新该页面。修改源码后，维护者需运行 `npm run build`，将更新后的 `dist/` 与源码一起提交；远端拉取最新提交即可使用新页面。
 
 这是前端交互原型，数据保存在页面内存中；刷新后会恢复示例数据。原型不连接真实 AI 模型或后台接口。
 
