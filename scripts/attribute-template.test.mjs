@@ -41,4 +41,28 @@ for (const [fileName, productId, productName, expectedCustomCount] of [
   assert.equal(addIndustryAttributes(imported, [dropdown], productName).length, 1);
 }
 
-console.log('PASS: JSON 示例字段、可选值及行业属性与规格导入');
+const automotive = JSON.parse(readFileSync(new URL('../src/data/automotive-attributes.json', import.meta.url), 'utf8'));
+assert.deepEqual(automotive.industryPath, ['汽车制造行业', '汽车零部件']);
+assert.equal(automotive.products.length, 95);
+assert.equal(new Set(automotive.products.map(item => item.category)).size, 10);
+assert.equal(new Set(automotive.products.map(item => item.id)).size, 95);
+assert.equal(automotive.attributes.length, 2470);
+assert.equal(new Set(automotive.attributes.map(item => item.id)).size, 2470);
+const coil = automotive.products.find(item => item.name === '点火线圈');
+assert.equal(coil.category, 'SYS-01_动力系统');
+assert.ok(automotive.products.some(item => item.category === coil.category && item.name === '附件皮带'));
+const resistance = automotive.attributes.find(item => item.productId === coil.id && item.name === '初级电阻');
+assert.equal(resistance.type, '数值');
+assert.equal(resistance.description, '初级绕组直流电阻');
+assert.equal(resistance.example, '0.5');
+const importedResistance = addIndustryAttributes([], [resistance], coil.name)[0];
+assert.equal(importedResistance.description, resistance.description);
+assert.equal(importedResistance.example, resistance.example);
+const optional = addIndustryAttributes([], [{ ...resistance, description: '', example: '' }], coil.name)[0];
+assert.equal(optional.description, '');
+assert.equal(optional.example, '');
+const repeatedNames = automotive.products.filter(item => item.name === '滤清器');
+assert.equal(repeatedNames.length, 2);
+assert.notEqual(repeatedNames[0].id, repeatedNames[1].id);
+
+console.log('PASS: Excel 系统分类与字段映射、选填说明与示例值、JSON 示例及规格导入');

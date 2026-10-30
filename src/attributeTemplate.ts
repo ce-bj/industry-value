@@ -5,6 +5,7 @@ export interface IndustryAttribute {
   type: string;
   unit: string;
   description?: string;
+  example?: string;
   code?: string;
   values?: string[];
 }
@@ -27,6 +28,8 @@ export interface TemplateAttribute {
   sourceId?: string;
   code?: string;
   values?: string[];
+  description?: string;
+  example?: string;
 }
 
 export interface AttributeTemplateExample {
@@ -94,6 +97,7 @@ export function addIndustryAttributes(current: TemplateAttribute[], selected: In
   return [...current, ...selected.filter(item => !known.has(item.id)).map(item => ({
     id: `industry-${item.id}`, name: item.name, type: item.type, unit: item.unit,
     sourceProduct: productName, sourceId: item.id, code: item.code, values: item.values ? [...item.values] : [],
+    description: item.description, example: item.example,
   }))];
 }
 
