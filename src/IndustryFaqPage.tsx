@@ -85,6 +85,8 @@ export default function IndustryFaqPage() {
   const [candidates, setCandidates] = useState<FaqDraft[]>([]);
   const [generatorNotice, setGeneratorNotice] = useState('');
   const [resultsNotice, setResultsNotice] = useState('');
+  const [saveCategory, setSaveCategory] = useState('常见问题');
+  const faqCategories = [...new Set(['常见问题', ...items.map(item => item.category)])];
   const [editOpen, setEditOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -110,14 +112,14 @@ export default function IndustryFaqPage() {
     if (!selected.length) return;
     if (selected.some(item => !item.question.trim() || !item.answer.trim())) { setResultsNotice('请补全所选 FAQ 的问题和答案。'); return; }
     const now = new Date().toLocaleString('sv-SE').replace('T', ' ');
-    const created = selected.map((item, index): FaqItem => ({ id: `ai-${Date.now()}-${index}`, question: item.question.trim(), answer: item.answer.trim(), category: '常见问题', publishedAt: now, status: 'draft', source: 'AI生成', sourceId: item.sourceId, sourceTitle: item.sourceTitle, sourceMenu: item.sourceMenu, generationNumber: item.generationNumber }));
+    const created = selected.map((item, index): FaqItem => ({ id: `ai-${Date.now()}-${index}`, question: item.question.trim(), answer: item.answer.trim(), category: saveCategory, publishedAt: now, status: 'draft', source: 'AI生成', sourceId: item.sourceId, sourceTitle: item.sourceTitle, sourceMenu: item.sourceMenu, generationNumber: item.generationNumber }));
     handleCreateFaqItems(created);
     setItems(current => [...created, ...current]);
     const addedIds = new Set(selected.map(item => item.id));
     setCandidates(current => current.filter(item => !addedIds.has(item.id)));
     setResultsOpen(false); setResultsNotice('');
     setSelectedReferences(new Set());
-    setNotice(`已保存 ${created.length} 条 FAQ 草稿；已有同来源 FAQ 保持不变。`);
+    setNotice(`已将 ${created.length} 条 FAQ 保存到「${saveCategory}」，状态为草稿。`);
   };
   const openEditor = (item?: FaqItem) => { setEditingId(item?.id || null); setForm(item ? { question: item.question, answer: item.answer, category: item.category } : emptyForm); setEditOpen(true); };
   const saveEditor = () => {
@@ -144,7 +146,7 @@ export default function IndustryFaqPage() {
     <div className="table-footer">共 {visibleItems.length} 条记录</div>
   </div>
   <FaqGeneratorDialog key={generatorOpen ? 'open' : 'closed'} open={generatorOpen} onOpenChange={setGeneratorOpen} sources={mockFaqSourceItemsData} generatedCounts={generatedCounts} selected={selectedReferences} onToggle={toggleReference} candidates={candidates} onGenerate={generate} onViewResults={() => { setGeneratorOpen(false); setResultsOpen(true); }} notice={generatorNotice} onMenuChange={menu => handleFetchFaqSources({ menu })} />
-  <FaqResultsDialog open={resultsOpen} onOpenChange={setResultsOpen} candidates={candidates} onEditCandidate={(id, patch) => { setCandidates(current => current.map(item => item.id === id ? { ...item, ...patch } : item)); setResultsNotice(''); }} onSelectMany={(ids, selected) => { const idSet = new Set(ids); setCandidates(current => current.map(item => idSet.has(item.id) ? { ...item, selected } : item)); setResultsNotice(''); }} onAdd={saveGenerated} notice={resultsNotice} />
+  <FaqResultsDialog categories={faqCategories} category={saveCategory} onCategoryChange={setSaveCategory} open={resultsOpen} onOpenChange={setResultsOpen} candidates={candidates} onEditCandidate={(id, patch) => { setCandidates(current => current.map(item => item.id === id ? { ...item, ...patch } : item)); setResultsNotice(''); }} onSelectMany={(ids, selected) => { const idSet = new Set(ids); setCandidates(current => current.map(item => idSet.has(item.id) ? { ...item, selected } : item)); setResultsNotice(''); }} onAdd={saveGenerated} notice={resultsNotice} />
   <Dialog open={editOpen} onOpenChange={setEditOpen}><DialogContent className="edit-dialog"><DialogHeader><DialogTitle>{editingId ? '编辑常见问题' : '添加常见问题'}</DialogTitle><DialogDescription>填写标准问题和答案，保存后可在列表中继续维护。</DialogDescription></DialogHeader><div className="edit-fields"><label>问题 <b>*</b><Input value={form.question} onChange={event => setForm(current => ({ ...current, question: event.target.value }))} /></label><label>答案 <b>*</b><Textarea rows={5} value={form.answer} onChange={event => setForm(current => ({ ...current, answer: event.target.value }))} /></label><label>所属分类<Input value={form.category} onChange={event => setForm(current => ({ ...current, category: event.target.value }))} /></label></div><div className="edit-footer"><Button onClick={() => setEditOpen(false)}>取消</Button><Button variant="primary" onClick={saveEditor}>保存</Button></div></DialogContent></Dialog>
   </PortalShell>;
 }

@@ -12,13 +12,16 @@ interface ResultsProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   candidates: FaqDraft[];
+  categories: string[];
+  category: string;
+  onCategoryChange: (category: string) => void;
   onEditCandidate: (id: string, patch: Partial<Pick<FaqDraft, 'question' | 'answer' | 'selected'>>) => void;
   onSelectMany: (ids: string[], selected: boolean) => void;
   onAdd: () => void;
   notice: string;
 }
 
-export function FaqResultsDialog({ open, onOpenChange, candidates, onEditCandidate, onSelectMany, onAdd, notice }: ResultsProps) {
+export function FaqResultsDialog({ open, onOpenChange, candidates, categories, category, onCategoryChange, onEditCandidate, onSelectMany, onAdd, notice }: ResultsProps) {
   const [query, setQuery] = useState('');
   const [viewedId, setViewedId] = useState<string | null>(null);
   const [selectedOnly, setSelectedOnly] = useState(false);
@@ -38,12 +41,13 @@ export function FaqResultsDialog({ open, onOpenChange, candidates, onEditCandida
         <label className="results-selected-filter"><Checkbox checked={selectedOnly} onCheckedChange={checked => setSelectedOnly(checked === true)} />只看已选</label>
         <span className="results-count">显示 {visible.length} / {candidates.length} 条</span>
       </div>
+      <div className="results-category-bar"><label htmlFor="faq-save-category">保存到分类</label><select id="faq-save-category" value={category} onChange={event => onCategoryChange(event.target.value)}>{categories.map(item => <option key={item} value={item}>{item}</option>)}</select><span>本次选中的 FAQ 将保存到此分类</span></div>
       <div className="results-body">
         <div className="results-list-wrap"><Table className="results-table"><TableHeader><TableRow><TableHead className="results-checkbox-cell"><Checkbox aria-label="全选当前结果" checked={visible.length > 0 && selectedVisibleCount === visible.length ? true : selectedVisibleCount ? 'indeterminate' : false} onCheckedChange={checked => onSelectMany(visible.map(item => item.id), checked === true)} /></TableHead><TableHead className="results-number-cell">序号</TableHead><TableHead>生成的问题</TableHead><TableHead className="results-source-cell">来源内容</TableHead><TableHead className="results-action-cell">操作</TableHead></TableRow></TableHeader><TableBody>{visible.map(item => <TableRow key={item.id} className={viewedId === item.id ? 'is-viewed' : ''}><TableCell><Checkbox aria-label={`选择${item.question}`} checked={item.selected} onCheckedChange={checked => onEditCandidate(item.id, { selected: checked === true })} /></TableCell><TableCell>{candidates.indexOf(item) + 1}</TableCell><TableCell><span className="results-question">{item.question}</span><span className="results-answer-preview">{item.answer}</span></TableCell><TableCell>{item.sourceTitle}<div className="results-generation">第 {item.generationNumber} 次生成</div></TableCell><TableCell><button className="text-action" onClick={() => setViewedId(item.id)}>查看</button></TableCell></TableRow>)}{visible.length === 0 && <TableRow><TableCell colSpan={5}><div className="table-empty">没有匹配的生成结果</div></TableCell></TableRow>}</TableBody></Table></div>
         <aside className="results-detail" aria-label="FAQ 详情">{viewed ? <><div className="results-detail-heading"><strong>查看 FAQ</strong><span>第 {candidates.indexOf(viewed) + 1} 条</span></div><label>问题<Input value={viewed.question} onChange={event => onEditCandidate(viewed.id, { question: event.target.value })} /></label><label>答案<Textarea rows={7} value={viewed.answer} onChange={event => onEditCandidate(viewed.id, { answer: event.target.value })} /></label><div className="results-detail-source">来源内容：{viewed.sourceTitle} · 第 {viewed.generationNumber} 次生成</div><label className="results-detail-select"><Checkbox checked={viewed.selected} onCheckedChange={checked => onEditCandidate(viewed.id, { selected: checked === true })} />保存这条 FAQ</label></> : <div className="results-detail-empty">点击列表中的“查看”，在这里阅读完整问答并按需修改。</div>}</aside>
       </div>
       {notice && <div className="generator-notice" role="alert">{notice}</div>}
-      <footer className="results-footer"><span>将保存 <strong>{selectedCount}</strong> 条为常见问题草稿；原有内容保持不变。</span><div><Button onClick={() => onOpenChange(false)}>暂不保存</Button><Button variant="primary" disabled={!selectedCount} onClick={onAdd}>确认保存（{selectedCount}）</Button></div></footer>
+      <footer className="results-footer"><span>将保存 <strong>{selectedCount}</strong> 条到「{category}」，状态为草稿。</span><div><Button onClick={() => onOpenChange(false)}>暂不保存</Button><Button variant="primary" disabled={!selectedCount} onClick={onAdd}>确认保存（{selectedCount}）</Button></div></footer>
     </DialogContent>
   </Dialog>;
 }
