@@ -5,9 +5,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { IndustryPills } from '@/components/IndustryPills';
 import type { IndustryAttribute, IndustrySpec } from '@/attributeTemplate';
+import { SITE_INFO_PATH, type SiteIndustry } from '@/siteIndustry';
 
-export interface IndustryProduct { id: string; category: string; name: string; description: string; sourcePath?: string[] }
+/** industry 为一级行业名称，用于按网站所属行业筛选行业库。 */
+export interface IndustryProduct { id: string; industry: string; category: string; name: string; description: string; sourcePath?: string[] }
 
 interface PickerProps {
   kind: 'attribute' | 'spec';
@@ -17,20 +20,26 @@ interface PickerProps {
   attributes: IndustryAttribute[];
   specs: IndustrySpec[];
   excludedIds: ReadonlySet<string>;
+  /** 网站信息中配置的所属行业：主行业在前，最多 3 个。 */
+  industries: SiteIndustry[];
+  onIndustryChange?: (industry: SiteIndustry) => void;
   onFilterChange: (filter: { productId?: string; category?: string }) => void;
   onConfirm: (ids: string[]) => void;
 }
 
-export function IndustryPickerDialog({ kind, open, onOpenChange, products, attributes, specs, excludedIds, onFilterChange, onConfirm }: PickerProps) {
-  const [productId, setProductId] = useState(products.find(item => (kind === 'spec' ? specs : attributes).some(field => field.productId === item.id))?.id || '');
+export function IndustryPickerDialog({ kind, open, onOpenChange, products, attributes, specs, excludedIds, industries, onIndustryChange, onFilterChange, onConfirm }: PickerProps) {
+  const isSpec = kind === 'spec';
+  const productsOf = (industry?: SiteIndustry) => products.filter(item => item.industry === industry?.primary && (isSpec ? specs : attributes).some(field => field.productId === item.id));
+  const [industryIndex, setIndustryIndex] = useState(0);
+  const activeIndustry = industries[industryIndex] ?? industries[0];
+  const [productId, setProductId] = useState(productsOf(industries[0])[0]?.id || '');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [categoryQuery, setCategoryQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([products[0]?.category || '']));
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([productsOf(industries[0])[0]?.category || '']));
   const [expandedSpec, setExpandedSpec] = useState<string | null>(null);
   const [query, setQuery] = useState('');
-  const isSpec = kind === 'spec';
-  const visibleProducts = isSpec ? products.filter(item => specs.some(spec => spec.productId === item.id)) : products.filter(item => attributes.some(attribute => attribute.productId === item.id));
+  const visibleProducts = productsOf(activeIndustry);
   const filteredProducts = visibleProducts.filter(item => !categoryQuery.trim() || `${item.category} ${item.name}`.toLowerCase().includes(categoryQuery.trim().toLowerCase()));
   const product = visibleProducts.find(item => item.id === productId);
   const categories = [...new Set(filteredProducts.map(item => item.category))];
@@ -51,19 +60,29 @@ export function IndustryPickerDialog({ kind, open, onOpenChange, products, attri
     onOpenChange(false);
   };
 
-  const sourcePath = product?.sourcePath || (selectedCategory === 'JSON 示例模板' ? ['docs 示例', 'JSON 示例模板'] : ['汽车制造行业', '汽车零部件']);
-  const chooseCategory = (category: string | null) => { setSelectedCategory(category); setProductId(''); setExpandedSpec(null); onFilterChange(category ? { category } : {}); };
+  const chooseIndustry = (index: number) => {
+    const next = industries[index];
+    const first = productsOf(next)[0];
+    setIndustryIndex(index); setProductId(first?.id || ''); setSelectedCategory(null); setExpandedSpec(null); setCategoryQuery(''); setQuery('');
+    setExpandedCategories(new Set([first?.category || '']));
+    onIndustryChange?.(next);
+  };
+  const chooseCategory = (category: string) => { setSelectedCategory(category); setProductId(''); setExpandedSpec(null); onFilterChange({ category }); };
   const chooseProduct = (id: string) => { setProductId(id); setSelectedCategory(null); setExpandedSpec(null); onFilterChange({ productId: id }); };
 
   return <Dialog open={open} onOpenChange={value => { if (!value) { setSelectedIds(new Set()); setQuery(''); } onOpenChange(value); }}>
     <DialogContent className="industry-picker-dialog">
       <DialogHeader><DialogTitle>{isSpec ? '选择行业属性值规格' : '选择行业属性模板'}</DialogTitle><DialogDescription>从产品下选择{isSpec ? '规格项' : '属性项'}，加入当前属性模板。{!isSpec && '按系统分类查找产品，支持跨产品选择。'}</DialogDescription></DialogHeader>
-      <div className="picker-industry-path"><strong>{product?.sourcePath || selectedCategory === 'JSON 示例模板' ? '示例来源' : '行业分类'}</strong>{sourcePath.map((part, index) => <span key={part}>{index > 0 && <ChevronRight size={13} />}{part}</span>)}</div>
-      <div className="picker-body">
+      {industries.length === 0 ? <div className="picker-industry-empty" role="status">
+        <strong>尚未设置所属行业</strong>
+        <p>请前往 <b>网站管理 - 网站设置 - 网站信息</b>，在「主营行业」上方的「所属行业」中完善行业信息后，再选择行业{isSpec ? '属性值规格' : '属性模板'}。</p>
+        <a className="ui-button ui-button-primary" href={SITE_INFO_PATH}>前往完善行业信息</a>
+      </div> : <>
+      <div className="picker-industry-path"><strong>行业分类</strong><IndustryPills industries={industries} activeIndex={industryIndex} onSelect={chooseIndustry} ariaLabel="切换所属行业" /></div>
+      {visibleProducts.length === 0 ? <div className="picker-industry-empty" role="status"><strong>{activeIndustry && `${activeIndustry.primary} / ${activeIndustry.secondary}`}暂无行业{isSpec ? '属性值规格' : '属性模板'}</strong><p>该行业的行业库还在建设中，可切换上方其他行业，或在属性模板中手动添加。</p></div> : <div className="picker-body">
         <aside className="picker-product-tree" aria-label="行业产品树">
           <div className="picker-pane-heading">产品分类 / 产品</div>
           <Input aria-label="筛选产品分类" placeholder="筛选分类或产品" value={categoryQuery} onChange={event => setCategoryQuery(event.target.value)} />
-          <button type="button" className={`picker-all-category ${!productId && !selectedCategory ? 'is-active' : ''}`} onClick={() => chooseCategory(null)}>全部分类</button>
           {categories.map(category => <div key={category} className="picker-category">
             <div className="picker-category-row">
               <button type="button" className="picker-category-expand" aria-label={`${expandedCategories.has(category) ? '收起' : '展开'}${category}`} aria-expanded={expandedCategories.has(category)} onClick={() => setExpandedCategories(current => { const next = new Set(current); next.has(category) ? next.delete(category) : next.add(category); return next; })}>{expandedCategories.has(category) ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</button>
@@ -81,8 +100,9 @@ export function IndustryPickerDialog({ kind, open, onOpenChange, products, attri
             return <TableRow key={item.id}><TableCell><Checkbox aria-label={`选择${item.name}`} checked={selectedIds.has(item.id) || alreadyAdded} disabled={alreadyAdded} onCheckedChange={() => toggle(item.id)} /></TableCell><TableCell><strong>{item.name}</strong><div className="picker-description">{spec?.description}</div></TableCell><TableCell>{spec ? <><button className="text-action picker-expand-values" onClick={() => setExpandedSpec(current => current === spec.id ? null : spec.id)} aria-expanded={expandedSpec === spec.id}>{expandedSpec === spec.id ? '收起' : '查看'} {spec.values.length} 个属性值</button><div className="picker-values-preview">{spec.values.slice(0, 3).join('、')}{spec.values.length > 3 ? '…' : ''}</div>{expandedSpec === spec.id && <div className="picker-value-list" role="group" aria-label={`${spec.name}的属性值`}>{spec.values.map(value => <span key={value}>{value}</span>)}</div>}</> : `${attribute?.type || ''} / ${attribute?.unit || '—'}`}</TableCell>{attribute && <TableCell>{attribute.values?.length ? <><button className="text-action picker-expand-values" onClick={() => setExpandedSpec(current => current === attribute.id ? null : attribute.id)} aria-expanded={expandedSpec === attribute.id}>{expandedSpec === attribute.id ? '收起' : '查看'} {attribute.values.length} 个可选值</button><div className="picker-values-preview">{attribute.values.slice(0, 3).join('、')}{attribute.values.length > 3 ? '…' : ''}</div>{expandedSpec === attribute.id && <div className="picker-value-list" role="group" aria-label={`${attribute.name}的可选值`}>{attribute.values.map(value => <span key={value}>{value}</span>)}</div>}</> : '—'}</TableCell>}{attribute && <><TableCell><span className="picker-field-text">{attribute.description || '—'}</span></TableCell><TableCell><span className="picker-field-text">{attribute.example || '—'}</span></TableCell></>}{!productId && <TableCell>{products.find(productItem => productItem.id === item.productId)?.name || '—'}</TableCell>}<TableCell>{alreadyAdded ? <span className="picker-added">已加入</span> : <span className="picker-available">可选</span>}</TableCell></TableRow>;
           })}{rows.length === 0 && <TableRow><TableCell colSpan={isSpec ? (productId ? 4 : 5) : (productId ? 7 : 8)}><div className="table-empty">当前产品没有匹配的{isSpec ? '规格' : '属性'}项</div></TableCell></TableRow>}</TableBody></Table></div>
         </section>
-      </div>
-      <footer className="picker-footer"><span>已选择 <strong>{selectedIds.size}</strong> 项，可跨产品选择</span><div><Button onClick={() => onOpenChange(false)}>取消</Button><Button variant="primary" disabled={!selectedIds.size} onClick={confirm}>加入{isSpec ? '规格类型' : '产品属性'}（{selectedIds.size}）</Button></div></footer>
+      </div>}
+      </>}
+      <footer className="picker-footer"><span>已选择 <strong>{selectedIds.size}</strong> 项，可跨产品选择</span><div><Button onClick={() => onOpenChange(false)}>取消</Button><Button variant="primary" disabled={!selectedIds.size || industries.length === 0} onClick={confirm}>加入{isSpec ? '规格类型' : '产品属性'}（{selectedIds.size}）</Button></div></footer>
     </DialogContent>
   </Dialog>;
 }

@@ -25,9 +25,16 @@
       "shape": "array",
       "endpoint": { "method": "GET", "path": "/api/industry-products/specifications" },
       "queryParams": ["productId", "category"]
+    },
+    {
+      "name": "mockSiteIndustriesData",
+      "shape": "array",
+      "endpoint": { "method": "GET", "path": "/api/site/industries" },
+      "queryParams": []
     }
   ],
   "actions": [
+    { "handler": "handleFetchSiteIndustries", "endpoint": { "method": "GET", "path": "/api/site/industries" }, "requestFrom": "param", "responseShape": "array" },
     { "handler": "handleFetchAttributeTemplates", "endpoint": { "method": "GET", "path": "/api/product/attribute-templates" }, "requestFrom": "param", "responseShape": "array" },
     { "handler": "handleFetchIndustryProducts", "endpoint": { "method": "GET", "path": "/api/industry-products" }, "requestFrom": "param", "responseShape": "array" },
     { "handler": "handleFetchIndustryAttributes", "endpoint": { "method": "GET", "path": "/api/industry-products/attributes" }, "requestFrom": "param", "responseShape": "array" },

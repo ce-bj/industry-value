@@ -1,0 +1,53 @@
+{
+  "page": "SiteInfoPage",
+  "route": "/site-info",
+  "dataSources": [
+    {
+      "name": "mockIndustryCatalogData",
+      "shape": "array",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/industries"
+      },
+      "queryParams": []
+    },
+    {
+      "name": "mockSiteIndustriesData",
+      "shape": "array",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/site/industries"
+      },
+      "queryParams": []
+    }
+  ],
+  "actions": [
+    {
+      "handler": "handleFetchIndustryCatalog",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/industries"
+      },
+      "requestFrom": "param",
+      "responseShape": "array"
+    },
+    {
+      "handler": "handleFetchSiteIndustries",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/site/industries"
+      },
+      "requestFrom": "param",
+      "responseShape": "array"
+    },
+    {
+      "handler": "handleSaveSiteIndustries",
+      "endpoint": {
+        "method": "PUT",
+        "path": "/api/site/industries"
+      },
+      "requestFrom": "body",
+      "responseShape": "array"
+    }
+  ]
+}
