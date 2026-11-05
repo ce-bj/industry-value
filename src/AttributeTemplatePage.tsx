@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, Plus, Search } from 'lucide-react';
 import { PortalShell } from '@/components/PortalShell';
 import { IndustryPickerDialog, type IndustryProduct } from '@/components/IndustryPickerDialog';
@@ -10,7 +10,8 @@ import { Textarea } from '@/components/ui/textarea';
 import automotiveTemplates from './data/automotive-attributes.json';
 import cncLatheExample from '../docs/数控车床_属性模板.json';
 import steelStructureExample from '../docs/建筑钢结构_属性模板.json';
-import { formatIndustry, loadSiteIndustries, SITE_INFO_PATH, type SiteIndustry } from '@/siteIndustry';
+import industryCatalog from './data/industry-catalog.json';
+import { formatIndustry, type Industry, type IndustryCatalogItem } from '@/industry';
 import { addIndustryAttributes, addIndustrySpecs, exampleIndustryAttributes, exampleTemplateAttributes, type IndustryAttribute, type IndustrySpec, type TemplateAttribute, type TemplateSpec } from '@/attributeTemplate';
 
 interface TemplateRecord { id: string; name: string; description: string; createdAt: string; productCount: number; attributes: TemplateAttribute[]; specs: TemplateSpec[] }
@@ -31,12 +32,12 @@ const mockAttributeTemplatesData: TemplateRecord[] = [
   { id: 'tpl-test', name: '测试1', description: '产品信息', createdAt: '2026-09-30', productCount: 1, attributes: baseAttributes, specs: [] },
 ];
 
-// industry 为一级行业，与「网站信息 - 所属行业」的一级行业对应，用来筛选可选的行业库。
+// industry / subIndustry 为一级、二级行业，选中的行业与之完全一致才会展示对应行业库。
 const mockIndustryProductsData: IndustryProduct[] = [
-  ...automotiveTemplates.products.map(item => ({ ...item, industry: '汽车制造行业' })),
-  { id: 'wheel-hub', industry: '汽车制造行业', category: '规格示例', name: '轮毂', description: '轮毂规格值示例' },
-  { id: 'cnc-lathe', industry: '机械设备制造', category: 'JSON 示例模板', name: '数控车床', description: `${cncLatheExample.attributeField.filter(field => !field.code).length} 个可选属性`, sourcePath: ['docs 示例', '数控车床'] },
-  { id: 'steel-structure', industry: '建筑工程', category: 'JSON 示例模板', name: '建筑钢结构', description: `${steelStructureExample.attributeField.filter(field => !field.code).length} 个可选属性`, sourcePath: ['docs 示例', '建筑钢结构'] },
+  ...automotiveTemplates.products.map(item => ({ ...item, industry: '汽车制造行业', subIndustry: '汽车零部件' })),
+  { id: 'wheel-hub', industry: '汽车制造行业', subIndustry: '汽车零部件', category: '规格示例', name: '轮毂', description: '轮毂规格值示例' },
+  { id: 'cnc-lathe', industry: '机械设备制造', subIndustry: '数控机床', category: 'JSON 示例模板', name: '数控车床', description: `${cncLatheExample.attributeField.filter(field => !field.code).length} 个可选属性`, sourcePath: ['docs 示例', '数控车床'] },
+  { id: 'steel-structure', industry: '建筑工程', subIndustry: '钢结构', category: 'JSON 示例模板', name: '建筑钢结构', description: `${steelStructureExample.attributeField.filter(field => !field.code).length} 个可选属性`, sourcePath: ['docs 示例', '建筑钢结构'] },
 ];
 
 const mockIndustryAttributesData: IndustryAttribute[] = [
@@ -62,9 +63,18 @@ const mockIndustrySpecsData: IndustrySpec[] = [
 function handleFetchAttributeTemplates(params: { keyword?: string }) {
   console.log('fetch attribute templates', params);
 }
-// ACTION: 获取网站所属行业 [GET] /api/site/industries
-function handleFetchSiteIndustries() {
-  console.log('fetch site industries');
+// 全部一级 - 二级行业
+const mockIndustryCatalogData: IndustryCatalogItem[] = industryCatalog;
+// 已有行业库的行业：当前只有 汽车制造行业 / 汽车零部件
+const mockIndustryLibrariesData: Industry[] = [{ primary: '汽车制造行业', secondary: '汽车零部件' }];
+
+// ACTION: 获取行业库（一级 - 二级行业） [GET] /api/industries
+function handleFetchIndustryCatalog() {
+  console.log('fetch industry catalog');
+}
+// ACTION: 获取已有行业库的行业 [GET] /api/industry-libraries
+function handleFetchIndustryLibraries() {
+  console.log('fetch industry libraries');
 }
 // ACTION: 获取行业产品树 [GET] /api/industry-products
 function handleFetchIndustryProducts(params: { industryPath: string }) {
@@ -109,7 +119,7 @@ export default function AttributeTemplatePage() {
   const [manualDescription, setManualDescription] = useState('');
   const [manualExample, setManualExample] = useState('');
   const [notice, setNotice] = useState('');
-  const [siteIndustries, setSiteIndustries] = useState<SiteIndustry[]>(() => { handleFetchSiteIndustries(); return loadSiteIndustries(); });
+  useEffect(() => { handleFetchIndustryCatalog(); handleFetchIndustryLibraries(); }, []);
   const visibleTemplates = useMemo(() => templates.filter(item => !keyword.trim() || `${item.name}${item.description}`.toLowerCase().includes(keyword.trim().toLowerCase())), [templates, keyword]);
 
   const startEditor = (record?: TemplateRecord, duplicate = false) => {
@@ -121,11 +131,9 @@ export default function AttributeTemplatePage() {
     setTab('attributes'); setNotice(''); setEditorOpen(true);
   };
   const openPicker = (kind: PickerKind) => {
-    handleFetchSiteIndustries();
-    const industries = loadSiteIndustries();
-    setSiteIndustries(industries);
-    if (industries.length) handleFetchIndustryProducts({ industryPath: `${industries[0].primary}/${industries[0].secondary}` });
-    const firstProductId = mockIndustryProductsData.find(item => item.industry === industries[0]?.primary)?.id ?? '';
+    const defaultIndustry = mockIndustryLibrariesData[0];
+    handleFetchIndustryProducts({ industryPath: `${defaultIndustry.primary}/${defaultIndustry.secondary}` });
+    const firstProductId = mockIndustryProductsData.find(item => item.industry === defaultIndustry.primary && item.subIndustry === defaultIndustry.secondary)?.id ?? '';
     kind === 'attribute' ? handleFetchIndustryAttributes({ productId: firstProductId }) : handleFetchIndustrySpecs({ productId: firstProductId });
     setPickerKind(kind);
   };
@@ -160,11 +168,11 @@ export default function AttributeTemplatePage() {
 
   return <PortalShell section="product" pageTitle={editorOpen ? editingId ? '编辑属性模板' : '新增属性模板' : '属性模板'}><div className="template-page">
     {!editorOpen ? <><div className="template-page-heading"><h1>属性模板</h1><label className="template-list-search"><Input aria-label="搜索属性模板" placeholder="请输入模板名称" value={keyword} onChange={event => { setKeyword(event.target.value); handleFetchAttributeTemplates({ keyword: event.target.value }); }} /><Search size={16} /></label></div><Button variant="primary" onClick={() => startEditor()}>新增自定义模板</Button>{notice && <div className="template-notice" role="status">{notice}</div>}<div className="template-list-table"><Table><TableHeader><TableRow><TableHead>属性模板名称</TableHead><TableHead>说明</TableHead><TableHead>创建时间</TableHead><TableHead>产品数</TableHead><TableHead>操作</TableHead></TableRow></TableHeader><TableBody>{visibleTemplates.map(item => <TableRow key={item.id}><TableCell>{item.name}</TableCell><TableCell>{item.description}</TableCell><TableCell>{item.createdAt}</TableCell><TableCell>{item.productCount}</TableCell><TableCell><button className="text-action" onClick={() => startEditor(item)}>编辑</button><span className="operation-sep">|</span><button className="text-action" onClick={() => startEditor(item, true)}>复制新增</button></TableCell></TableRow>)}{visibleTemplates.length === 0 && <TableRow><TableCell colSpan={5}><div className="table-empty">没有匹配的属性模板</div></TableCell></TableRow>}</TableBody></Table></div><div className="table-footer">共 {visibleTemplates.length} 条记录</div></> : <><div className="template-page-heading"><h1>{editingId ? '编辑属性模板' : '新增属性模板'}</h1><Button onClick={() => { setEditorOpen(false); setNotice(''); }}><ChevronLeft size={14} /> 返回</Button></div><div className="template-editor-form"><label><span><b>*</b> 属性模板名：</span><Input placeholder="请输入名称" value={name} onChange={event => setName(event.target.value)} /></label><label><span>说明：</span><Textarea placeholder="请输入" rows={2} value={description} onChange={event => setDescription(event.target.value)} /></label></div><div className="template-tabs" role="tablist" aria-label="属性模板内容">{editorTabs.map(item => <button key={item.id} type="button" role="tab" aria-selected={tab === item.id} className={tab === item.id ? 'is-active' : ''} onClick={() => setTab(item.id)}>{item.label}</button>)}</div>
-      {tab === 'attributes' && <section className="template-section"><div className="template-section-toolbar"><div><Button variant="primary" onClick={() => { setManualKind('attribute'); setManualName(''); setManualDetail(''); setManualDescription(''); setManualExample(''); }}><Plus size={15} /> 添加属性项</Button><Button onClick={() => openPicker('attribute')}>选择行业属性模板</Button></div>{siteIndustries.length ? <span className="template-industry-summary">所属行业：{siteIndustries.map(formatIndustry).join('、')}</span> : <span className="template-industry-summary">未设置所属行业，<a href={SITE_INFO_PATH}>去网站信息完善</a></span>}</div><div className="template-editor-table"><Table><TableHeader><TableRow><TableHead>属性名</TableHead><TableHead>类型</TableHead><TableHead>说明（选填）</TableHead><TableHead>示例值（选填）</TableHead><TableHead>单位</TableHead><TableHead>可选值</TableHead><TableHead>来源产品</TableHead><TableHead>显示状态</TableHead><TableHead>操作</TableHead></TableRow></TableHeader><TableBody>{fields.map(item => <TableRow key={item.id}><TableCell>{item.name}</TableCell><TableCell>{item.type}</TableCell><TableCell><Input className="template-field-note" aria-label={`${item.name}说明`} placeholder="选填" value={item.description || ''} onChange={event => setFields(current => current.map(field => field.id === item.id ? { ...field, description: event.target.value } : field))} /></TableCell><TableCell><Input className="template-field-example" aria-label={`${item.name}示例值`} placeholder="选填" value={item.example || ''} onChange={event => setFields(current => current.map(field => field.id === item.id ? { ...field, example: event.target.value } : field))} /></TableCell><TableCell>{item.unit}</TableCell><TableCell><span className="template-attribute-values" title={item.values?.join('、')}>{item.values?.length ? `${item.values.slice(0, 3).join('、')}${item.values.length > 3 ? ` 等 ${item.values.length} 项` : ''}` : '—'}</span></TableCell><TableCell>{item.sourceProduct || '系统 / 自定义'}</TableCell><TableCell><span className="template-visible">◉ 显示</span></TableCell><TableCell>{item.id.startsWith('base-') ? <span className="template-fixed">基础字段</span> : <button className="text-action" onClick={() => setFields(current => current.filter(field => field.id !== item.id))}>移除</button>}</TableCell></TableRow>)}</TableBody></Table></div></section>}
+      {tab === 'attributes' && <section className="template-section"><div className="template-section-toolbar"><div><Button variant="primary" onClick={() => { setManualKind('attribute'); setManualName(''); setManualDetail(''); setManualDescription(''); setManualExample(''); }}><Plus size={15} /> 添加属性项</Button><Button onClick={() => openPicker('attribute')}>选择行业属性模板</Button></div><span>已有行业库：{mockIndustryLibrariesData.map(formatIndustry).join('、')}</span></div><div className="template-editor-table"><Table><TableHeader><TableRow><TableHead>属性名</TableHead><TableHead>类型</TableHead><TableHead>说明（选填）</TableHead><TableHead>示例值（选填）</TableHead><TableHead>单位</TableHead><TableHead>可选值</TableHead><TableHead>来源产品</TableHead><TableHead>显示状态</TableHead><TableHead>操作</TableHead></TableRow></TableHeader><TableBody>{fields.map(item => <TableRow key={item.id}><TableCell>{item.name}</TableCell><TableCell>{item.type}</TableCell><TableCell><Input className="template-field-note" aria-label={`${item.name}说明`} placeholder="选填" value={item.description || ''} onChange={event => setFields(current => current.map(field => field.id === item.id ? { ...field, description: event.target.value } : field))} /></TableCell><TableCell><Input className="template-field-example" aria-label={`${item.name}示例值`} placeholder="选填" value={item.example || ''} onChange={event => setFields(current => current.map(field => field.id === item.id ? { ...field, example: event.target.value } : field))} /></TableCell><TableCell>{item.unit}</TableCell><TableCell><span className="template-attribute-values" title={item.values?.join('、')}>{item.values?.length ? `${item.values.slice(0, 3).join('、')}${item.values.length > 3 ? ` 等 ${item.values.length} 项` : ''}` : '—'}</span></TableCell><TableCell>{item.sourceProduct || '系统 / 自定义'}</TableCell><TableCell><span className="template-visible">◉ 显示</span></TableCell><TableCell>{item.id.startsWith('base-') ? <span className="template-fixed">基础字段</span> : <button className="text-action" onClick={() => setFields(current => current.filter(field => field.id !== item.id))}>移除</button>}</TableCell></TableRow>)}</TableBody></Table></div></section>}
       {tab === 'specs' && <section className="template-section"><div className="template-section-toolbar"><div><Button variant="primary" onClick={() => { setManualKind('spec'); setManualName(''); setManualDetail(''); setManualDescription(''); setManualExample(''); }}><Plus size={15} /> 添加规格</Button><Button onClick={() => openPicker('spec')}>选择行业属性值规格</Button></div><span>按产品选择规格名及其可选属性值</span></div><div className="template-editor-table"><Table><TableHeader><TableRow><TableHead>规格名</TableHead><TableHead>显示类型</TableHead><TableHead>规格值</TableHead><TableHead>来源产品</TableHead><TableHead>操作</TableHead></TableRow></TableHeader><TableBody>{specs.map(item => <TableRow key={item.id}><TableCell>{item.name}</TableCell><TableCell>{item.displayType}</TableCell><TableCell><div className="template-spec-values">{item.values.slice(0, 4).join('、')}{item.values.length > 4 ? ` 等 ${item.values.length} 个值` : ''}</div></TableCell><TableCell>{item.sourceProduct || '自定义'}</TableCell><TableCell><button className="text-action" onClick={() => setSpecs(current => current.filter(spec => spec.id !== item.id))}>移除</button></TableCell></TableRow>)}{specs.length === 0 && <TableRow><TableCell colSpan={5}><div className="table-empty">尚未添加规格，可从行业属性值规格库选择</div></TableCell></TableRow>}</TableBody></Table></div></section>}
       {tab !== 'attributes' && tab !== 'specs' && <div className="template-other-tab">{editorTabs.find(item => item.id === tab)?.label}沿用现有模板配置方式，本期行业库选择不涉及此页签。</div>}
       {notice && <div className="template-notice" role="status">{notice}</div>}<div className="template-editor-footer"><Button onClick={() => setEditorOpen(false)}>取消</Button><Button variant="primary" onClick={saveTemplate}>保存属性模板</Button></div></>}
-    <IndustryPickerDialog key={pickerKind || 'closed'} kind={pickerKind || 'attribute'} open={pickerKind !== null} onOpenChange={open => !open && setPickerKind(null)} products={mockIndustryProductsData} attributes={mockIndustryAttributesData} specs={mockIndustrySpecsData} industries={siteIndustries} onIndustryChange={industry => handleFetchIndustryProducts({ industryPath: `${industry.primary}/${industry.secondary}` })} excludedIds={new Set((pickerKind === 'spec' ? specs : fields).map(item => item.sourceId).filter((id): id is string => Boolean(id)))} onFilterChange={filter => pickerKind === 'spec' ? handleFetchIndustrySpecs(filter) : handleFetchIndustryAttributes(filter)} onConfirm={importSelected} />
+    <IndustryPickerDialog key={pickerKind || 'closed'} kind={pickerKind || 'attribute'} open={pickerKind !== null} onOpenChange={open => !open && setPickerKind(null)} products={mockIndustryProductsData} attributes={mockIndustryAttributesData} specs={mockIndustrySpecsData} industryCatalog={mockIndustryCatalogData} industryLibraries={mockIndustryLibrariesData} onIndustryChange={industry => handleFetchIndustryProducts({ industryPath: `${industry.primary}/${industry.secondary}` })} excludedIds={new Set((pickerKind === 'spec' ? specs : fields).map(item => item.sourceId).filter((id): id is string => Boolean(id)))} onFilterChange={filter => pickerKind === 'spec' ? handleFetchIndustrySpecs(filter) : handleFetchIndustryAttributes(filter)} onConfirm={importSelected} />
     <Dialog open={manualKind !== null} onOpenChange={open => !open && setManualKind(null)}><DialogContent className="template-manual-dialog"><DialogHeader><DialogTitle>{manualKind === 'spec' ? '添加规格' : '添加属性项'}</DialogTitle><DialogDescription>填写当前模板的自定义内容。</DialogDescription></DialogHeader><div className="template-manual-fields"><label>名称 <b>*</b><Input value={manualName} onChange={event => setManualName(event.target.value)} /></label><label>{manualKind === 'spec' ? '规格值（用逗号分隔）' : '字段类型'}<Textarea rows={3} placeholder={manualKind === 'spec' ? '例如：M6×20，M8×30' : '例如：txt、number'} value={manualDetail} onChange={event => setManualDetail(event.target.value)} /></label>{manualKind === 'attribute' && <><label>说明（选填）<Textarea rows={2} value={manualDescription} onChange={event => setManualDescription(event.target.value)} /></label><label>示例值（选填）<Input value={manualExample} onChange={event => setManualExample(event.target.value)} /></label></>}</div><div className="template-manual-footer"><Button onClick={() => setManualKind(null)}>取消</Button><Button variant="primary" disabled={!manualName.trim() || (manualKind === 'spec' && !manualDetail.trim())} onClick={addManual}>添加</Button></div></DialogContent></Dialog>
   </div></PortalShell>;
 }

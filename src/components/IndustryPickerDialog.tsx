@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, Search } from 'lucide-react';
+import { ChevronDown, ChevronRight, Library, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { IndustryPills } from '@/components/IndustryPills';
+import { IndustrySelect } from '@/components/IndustrySelect';
 import type { IndustryAttribute, IndustrySpec } from '@/attributeTemplate';
-import { SITE_INFO_PATH, type SiteIndustry } from '@/siteIndustry';
+import { formatIndustry, hasIndustryLibrary, primaryIndustryOptions, secondaryIndustryOptions, type Industry, type IndustryCatalogItem } from '@/industry';
 
-/** industry 为一级行业名称，用于按网站所属行业筛选行业库。 */
-export interface IndustryProduct { id: string; industry: string; category: string; name: string; description: string; sourcePath?: string[] }
+/** industry / subIndustry 为一级、二级行业名称，用于按所选行业筛选行业库。 */
+export interface IndustryProduct { id: string; industry: string; subIndustry: string; category: string; name: string; description: string; sourcePath?: string[] }
 
 interface PickerProps {
   kind: 'attribute' | 'spec';
@@ -20,26 +20,29 @@ interface PickerProps {
   attributes: IndustryAttribute[];
   specs: IndustrySpec[];
   excludedIds: ReadonlySet<string>;
-  /** 网站信息中配置的所属行业：主行业在前，最多 3 个。 */
-  industries: SiteIndustry[];
-  onIndustryChange?: (industry: SiteIndustry) => void;
+  /** 全部一级 - 二级行业，用户在面板内自行选择其一。 */
+  industryCatalog: IndustryCatalogItem[];
+  /** 其中已有行业库的行业：在下拉里置顶并带图标。 */
+  industryLibraries: Industry[];
+  onIndustryChange?: (industry: Industry) => void;
   onFilterChange: (filter: { productId?: string; category?: string }) => void;
   onConfirm: (ids: string[]) => void;
 }
 
-export function IndustryPickerDialog({ kind, open, onOpenChange, products, attributes, specs, excludedIds, industries, onIndustryChange, onFilterChange, onConfirm }: PickerProps) {
+export function IndustryPickerDialog({ kind, open, onOpenChange, products, attributes, specs, excludedIds, industryCatalog, industryLibraries, onIndustryChange, onFilterChange, onConfirm }: PickerProps) {
   const isSpec = kind === 'spec';
-  const productsOf = (industry?: SiteIndustry) => products.filter(item => item.industry === industry?.primary && (isSpec ? specs : attributes).some(field => field.productId === item.id));
-  const [industryIndex, setIndustryIndex] = useState(0);
-  const activeIndustry = industries[industryIndex] ?? industries[0];
-  const [productId, setProductId] = useState(productsOf(industries[0])[0]?.id || '');
+  const productsOf = (industry: Partial<Industry>) => !hasIndustryLibrary(industry, industryLibraries) ? [] : products.filter(item => item.industry === industry.primary && item.subIndustry === industry.secondary && (isSpec ? specs : attributes).some(field => field.productId === item.id));
+  // 默认选中第一个已有行业库的行业，用户可在上方自行改选其他行业。
+  const [industry, setIndustry] = useState<Partial<Industry>>(() => industryLibraries[0] ?? {});
+  const [onlyWithLibrary, setOnlyWithLibrary] = useState(false);
+  const [productId, setProductId] = useState(productsOf(industry)[0]?.id || '');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [categoryQuery, setCategoryQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([productsOf(industries[0])[0]?.category || '']));
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([productsOf(industry)[0]?.category || '']));
   const [expandedSpec, setExpandedSpec] = useState<string | null>(null);
   const [query, setQuery] = useState('');
-  const visibleProducts = productsOf(activeIndustry);
+  const visibleProducts = productsOf(industry);
   const filteredProducts = visibleProducts.filter(item => !categoryQuery.trim() || `${item.category} ${item.name}`.toLowerCase().includes(categoryQuery.trim().toLowerCase()));
   const product = visibleProducts.find(item => item.id === productId);
   const categories = [...new Set(filteredProducts.map(item => item.category))];
@@ -60,26 +63,27 @@ export function IndustryPickerDialog({ kind, open, onOpenChange, products, attri
     onOpenChange(false);
   };
 
-  const chooseIndustry = (index: number) => {
-    const next = industries[index];
+  const resetProducts = (next: Partial<Industry>) => {
     const first = productsOf(next)[0];
-    setIndustryIndex(index); setProductId(first?.id || ''); setSelectedCategory(null); setExpandedSpec(null); setCategoryQuery(''); setQuery('');
+    setProductId(first?.id || ''); setSelectedCategory(null); setExpandedSpec(null); setCategoryQuery(''); setQuery('');
     setExpandedCategories(new Set([first?.category || '']));
-    onIndustryChange?.(next);
   };
+  const choosePrimary = (primary: string) => { if (primary === industry.primary) return; const next = { primary }; setIndustry(next); resetProducts(next); };
+  const chooseSecondary = (secondary: string) => { const next = { primary: industry.primary, secondary }; setIndustry(next); resetProducts(next); onIndustryChange?.(next as Industry); };
   const chooseCategory = (category: string) => { setSelectedCategory(category); setProductId(''); setExpandedSpec(null); onFilterChange({ category }); };
   const chooseProduct = (id: string) => { setProductId(id); setSelectedCategory(null); setExpandedSpec(null); onFilterChange({ productId: id }); };
 
   return <Dialog open={open} onOpenChange={value => { if (!value) { setSelectedIds(new Set()); setQuery(''); } onOpenChange(value); }}>
-    <DialogContent className="industry-picker-dialog">
+    <DialogContent className="industry-picker-dialog" onEscapeKeyDown={event => { if (document.querySelector('.industry-select-popover')) event.preventDefault(); }}>
       <DialogHeader><DialogTitle>{isSpec ? '选择行业属性值规格' : '选择行业属性模板'}</DialogTitle><DialogDescription>从产品下选择{isSpec ? '规格项' : '属性项'}，加入当前属性模板。{!isSpec && '按系统分类查找产品，支持跨产品选择。'}</DialogDescription></DialogHeader>
-      {industries.length === 0 ? <div className="picker-industry-empty" role="status">
-        <strong>尚未设置所属行业</strong>
-        <p>请前往 <b>网站管理 - 网站设置 - 网站信息</b>，在「主营行业」上方的「所属行业」中完善行业信息后，再选择行业{isSpec ? '属性值规格' : '属性模板'}。</p>
-        <a className="ui-button ui-button-primary" href={SITE_INFO_PATH}>前往完善行业信息</a>
-      </div> : <>
-      <div className="picker-industry-path"><strong>行业分类</strong><IndustryPills industries={industries} activeIndex={industryIndex} onSelect={chooseIndustry} ariaLabel="切换所属行业" /></div>
-      {visibleProducts.length === 0 ? <div className="picker-industry-empty" role="status"><strong>{activeIndustry && `${activeIndustry.primary} / ${activeIndustry.secondary}`}暂无行业{isSpec ? '属性值规格' : '属性模板'}</strong><p>该行业的行业库还在建设中，可切换上方其他行业，或在属性模板中手动添加。</p></div> : <div className="picker-body">
+      <div className="picker-industry-path">
+        <strong>行业分类</strong>
+        <IndustrySelect label="一级行业" value={industry.primary ?? ''} placeholder="选择一级行业" options={query => primaryIndustryOptions(industryCatalog, industryLibraries, { onlyWithLibrary, query })} onChange={choosePrimary} />
+        <IndustrySelect label="二级行业" value={industry.secondary ?? ''} placeholder={industry.primary ? '选择二级行业' : '请先选择一级行业'} disabled={!industry.primary} options={query => secondaryIndustryOptions(industryCatalog, industry.primary ?? '', industryLibraries, { onlyWithLibrary, query })} onChange={chooseSecondary} />
+        <label className="picker-industry-filter"><Checkbox aria-label="仅显示已有行业库的行业" checked={onlyWithLibrary} onCheckedChange={checked => setOnlyWithLibrary(checked === true)} />仅显示已有行业库</label>
+        <span className="picker-industry-legend"><Library size={14} aria-hidden="true" /> 已有行业库（置顶）</span>
+      </div>
+      {!industry.secondary ? <div className="picker-industry-empty" role="status"><strong>请选择行业</strong><p>从上方选择一级行业和二级行业，查看该行业的{isSpec ? '属性值规格' : '属性模板'}。带 <Library size={13} aria-hidden="true" /> 图标的是已有行业库的行业，已置顶显示。</p></div> : visibleProducts.length === 0 ? <div className="picker-industry-empty" role="status"><strong>{formatIndustry(industry as Industry)}暂无行业{isSpec ? '属性值规格' : '属性模板'}</strong><p>该行业的行业库还在建设中，请改选带 <Library size={13} aria-hidden="true" /> 图标的已有行业库的行业，也可在属性模板中手动添加。</p></div> : <div className="picker-body">
         <aside className="picker-product-tree" aria-label="行业产品树">
           <div className="picker-pane-heading">产品分类 / 产品</div>
           <Input aria-label="筛选产品分类" placeholder="筛选分类或产品" value={categoryQuery} onChange={event => setCategoryQuery(event.target.value)} />
@@ -101,8 +105,7 @@ export function IndustryPickerDialog({ kind, open, onOpenChange, products, attri
           })}{rows.length === 0 && <TableRow><TableCell colSpan={isSpec ? (productId ? 4 : 5) : (productId ? 7 : 8)}><div className="table-empty">当前产品没有匹配的{isSpec ? '规格' : '属性'}项</div></TableCell></TableRow>}</TableBody></Table></div>
         </section>
       </div>}
-      </>}
-      <footer className="picker-footer"><span>已选择 <strong>{selectedIds.size}</strong> 项，可跨产品选择</span><div><Button onClick={() => onOpenChange(false)}>取消</Button><Button variant="primary" disabled={!selectedIds.size || industries.length === 0} onClick={confirm}>加入{isSpec ? '规格类型' : '产品属性'}（{selectedIds.size}）</Button></div></footer>
+      <footer className="picker-footer"><span>已选择 <strong>{selectedIds.size}</strong> 项，可跨产品选择</span><div><Button onClick={() => onOpenChange(false)}>取消</Button><Button variant="primary" disabled={!selectedIds.size} onClick={confirm}>加入{isSpec ? '规格类型' : '产品属性'}（{selectedIds.size}）</Button></div></footer>
     </DialogContent>
   </Dialog>;
 }

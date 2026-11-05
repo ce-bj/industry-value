@@ -1,0 +1,23 @@
+.picker-industry-path{flex-wrap:wrap;gap:10px 12px}
+.picker-industry-filter{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#576273;cursor:pointer}
+.picker-industry-legend{display:inline-flex;align-items:center;gap:5px;margin-left:auto;font-size:11px;color:#8794aa}
+.picker-industry-legend svg,.industry-library-icon{color:#2b5ce6;flex:none}
+.industry-select{position:relative}
+.industry-select-trigger{display:inline-flex;align-items:center;justify-content:space-between;gap:10px;min-width:190px;height:32px;padding:0 10px;border:1px solid #d8deea;border-radius:4px;background:#fff;color:#30343c;font-size:12px;text-align:left}
+.industry-select-trigger:hover:not(:disabled){border-color:#8aa4ff}
+.industry-select-trigger.is-placeholder{color:#adb4c0}
+.industry-select-trigger:disabled{background:#f5f7fa;color:#b4bbc6}
+.industry-select-trigger svg{color:#a3abb8;flex:none}
+.industry-select-popover{position:absolute;top:36px;left:0;z-index:6;width:270px;max-height:330px;display:flex;flex-direction:column;border:1px solid #dfe5ef;border-radius:6px;background:#fff;box-shadow:0 8px 28px #1f2f5326}
+.industry-select-search{display:flex;align-items:center;gap:6px;padding:0 10px;border-bottom:1px solid #edf0f5;color:#96a0ad}
+.industry-select-search input{flex:1;height:34px;border:0;outline:0;background:none;font-size:12px;color:#30343c}
+.industry-select-popover ul{margin:0;padding:4px;list-style:none;overflow:auto}
+.industry-option{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:8px 10px;border:0;border-radius:4px;background:none;font-size:12px;color:#3f4857;text-align:left}
+.industry-option:hover{background:#f1f6ff}
+.industry-option.is-selected{color:#2b5ce6;font-weight:600;background:#edf3ff}
+.industry-select-empty{padding:14px 10px;text-align:center;font-size:12px;color:#9aa4b2}
+.picker-industry-empty{display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:40px 24px;text-align:center;color:#6c7686;font-size:13px}
+.picker-industry-empty strong{font-size:15px;color:#2f3949}
+.picker-industry-empty p{max-width:480px;margin:0;line-height:1.7}
+.picker-industry-empty p svg{vertical-align:-2px;color:#2b5ce6}
+@media(max-width:600px){.industry-select-trigger{min-width:0;width:100%}.industry-select{flex:1 1 150px}.industry-select-popover{width:min(270px,calc(100vw - 48px))}.picker-industry-legend{margin-left:0}}

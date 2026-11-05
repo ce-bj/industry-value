@@ -27,14 +27,21 @@
       "queryParams": ["productId", "category"]
     },
     {
-      "name": "mockSiteIndustriesData",
+      "name": "mockIndustryCatalogData",
       "shape": "array",
-      "endpoint": { "method": "GET", "path": "/api/site/industries" },
+      "endpoint": { "method": "GET", "path": "/api/industries" },
+      "queryParams": []
+    },
+    {
+      "name": "mockIndustryLibrariesData",
+      "shape": "array",
+      "endpoint": { "method": "GET", "path": "/api/industry-libraries" },
       "queryParams": []
     }
   ],
   "actions": [
-    { "handler": "handleFetchSiteIndustries", "endpoint": { "method": "GET", "path": "/api/site/industries" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleFetchIndustryCatalog", "endpoint": { "method": "GET", "path": "/api/industries" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleFetchIndustryLibraries", "endpoint": { "method": "GET", "path": "/api/industry-libraries" }, "requestFrom": "param", "responseShape": "array" },
     { "handler": "handleFetchAttributeTemplates", "endpoint": { "method": "GET", "path": "/api/product/attribute-templates" }, "requestFrom": "param", "responseShape": "array" },
     { "handler": "handleFetchIndustryProducts", "endpoint": { "method": "GET", "path": "/api/industry-products" }, "requestFrom": "param", "responseShape": "array" },
     { "handler": "handleFetchIndustryAttributes", "endpoint": { "method": "GET", "path": "/api/industry-products/attributes" }, "requestFrom": "param", "responseShape": "array" },
