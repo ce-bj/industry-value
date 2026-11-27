@@ -1,0 +1,22 @@
+{
+  "page": "OverviewPage",
+  "route": "/overview/",
+  "dataSources": [
+    {
+      "name": "mockPortalOverviewData",
+      "shape": "object",
+      "endpoint": { "method": "GET", "path": "/api/industry-scenario/portal-overview" },
+      "queryParams": []
+    },
+    {
+      "name": "mockEnterpriseProfileData",
+      "shape": "object",
+      "endpoint": { "method": "GET", "path": "/api/industry-scenario/enterprise-profile" },
+      "queryParams": []
+    }
+  ],
+  "actions": [
+    { "handler": "handleFetchPortalOverview", "endpoint": { "method": "GET", "path": "/api/industry-scenario/portal-overview" }, "requestFrom": "none", "responseShape": "object" },
+    { "handler": "handleFetchEnterpriseProfile", "endpoint": { "method": "GET", "path": "/api/industry-scenario/enterprise-profile" }, "requestFrom": "none", "responseShape": "object" }
+  ]
+}

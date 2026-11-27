@@ -1,0 +1,161 @@
+/* ── 客户管理 › 外贸客户洞察 栏目框架 ─────────────────── */
+.customer-nav{width:176px;flex:none;border-right:1px solid #e6eaf0;background:#fff;padding:14px 0;font-size:13px}
+.customer-nav-group{display:flex;align-items:center;gap:8px;padding:10px 18px;color:#2b2f36}
+.customer-nav-group svg{color:#8b93a1}
+.customer-nav-group strong{font-weight:600}
+.customer-nav-item{display:flex;align-items:center;gap:6px;height:40px;padding:0 18px 0 41px;color:#4b5058;text-decoration:none}
+a.customer-nav-item:hover{color:#3b65de;background:#f6f8fd}
+.customer-nav-item.is-active{color:#3b65de;background:#eef3ff;font-weight:600;box-shadow:inset 3px 0 #4a75f4}
+span.customer-nav-item{color:#8a909b}
+.customer-nav-new{font-size:10px;line-height:1;padding:2px 4px;border-radius:3px;background:#ffefe6;color:#e2640f;font-weight:400}
+.customer-main{background:#f1f6fb}
+.customer-main .portal-breadcrumb{background:#fff}
+
+/* ── 市场与机会 ─────────────────────────────────── */
+.mo-page{padding:18px 20px 32px;display:flex;flex-direction:column;gap:14px}
+.mo-heading h1{margin:0;font-size:17px;font-weight:600;color:#1f2329}
+.mo-heading p{margin:6px 0 0;font-size:12px;color:#7c8491}
+.mo-card{background:#fff;border:1px solid #e6ecf4;border-radius:6px;padding:16px 18px}
+.mo-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.mo-card-head h2{margin:0;font-size:15px;font-weight:600;color:#1f2329}
+.mo-head-note{font-size:12px;color:#9aa2ad}
+.mo-muted-badge{background:#f1f4f9;color:#7c8491}
+.mo-products{padding:14px 16px;border-radius:8px;background:#f2f6ff;border:1px solid #dce6ff;margin-bottom:14px}
+.mo-products-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mo-products-head strong{font-size:13px;color:#2f5bdc}
+.mo-products-head span{font-size:12px;color:#8a919c}
+.mo-product-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.mo-product-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 12px;border-radius:14px;background:#fff;border:1px solid #d6e1ff;color:#3a63e0;font-size:12px}
+.mo-product-tag button{display:inline-flex;border:0;background:none;padding:2px;border-radius:50%;color:#7c93d6}
+.mo-product-tag button:hover{background:#e4ebff}
+.mo-product-add{display:flex;gap:8px;margin-top:10px;max-width:400px}.mo-product-add .ui-input{height:32px}
+.mo-hs{margin-top:12px;padding-top:10px;border-top:1px dashed #cbd8f5;display:flex;flex-direction:column;gap:5px}
+.mo-hs-title{font-size:11px;color:#8a919c;margin-bottom:2px}
+.mo-hs-row{display:flex;align-items:baseline;gap:10px;font-size:12px}
+.mo-hs-row>span{flex:0 0 86px;color:#1f2329;font-weight:500}
+.mo-hs-row code{flex:0 0 70px;color:#2f5bdc;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.mo-hs-row em{font-style:normal;color:#8a919c}
+.mo-products-foot{margin-top:10px;font-size:12px;color:#8a919c;line-height:1.7}
+.mo-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mo-metric{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid #e9eef5;border-radius:6px;background:#fafbfd}
+.mo-metric span{font-size:12px;color:#6b7280}
+.mo-metric strong{font-size:22px;color:#1f2329;font-weight:700}
+.mo-metric small{font-size:11px;color:#9aa2ad}
+
+.mo-bars{display:flex;flex-direction:column;gap:9px}
+.mo-bar-row{display:grid;grid-template-columns:90px 1fr 110px 64px;align-items:center;gap:12px;font-size:12px}
+.mo-bar-label{color:#30343c}
+.mo-bar-track{height:12px;border-radius:6px;background:#f0f3f8;overflow:hidden}
+.mo-bar-fill{display:block;height:100%;border-radius:6px}
+.mo-bar-fill.mo-bar-top{background:#14b8a6}.mo-bar-fill.mo-bar-high{background:#4a75f4}.mo-bar-fill.mo-bar-mid{background:#9db4f8}
+.mo-bar-value{color:#4b5563;text-align:right}
+.mo-opportunity{justify-self:start;padding:2px 6px;border-radius:3px;font-size:11px}
+.mo-opportunity.mo-bar-top{background:#e6faf7;color:#0f8a7c}.mo-opportunity.mo-bar-high{background:#eef3ff;color:#3a63e0}.mo-opportunity.mo-bar-mid{background:#f1f4f9;color:#6b7280}
+.mo-market-tiles{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.mo-market-tile{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border:1px solid #e9eef5;border-radius:6px}
+.mo-market-tile>span{font-size:22px}
+.mo-market-tile strong{font-size:15px;color:#1f2329}
+.mo-market-tile small{font-size:11px;color:#8a919c}
+.mo-insight{margin-top:14px;display:flex;gap:8px;align-items:flex-start;padding:11px 14px;border-radius:6px;background:#f2f6ff;border:1px solid #dce6ff;color:#3a55a8;font-size:12px;line-height:1.7}
+.mo-insight svg{flex:none;margin-top:3px}
+
+.mo-two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.mo-tip{font-size:12px;color:#7c8491;padding:9px 12px;background:#f7f9fc;border-radius:6px;margin-bottom:8px}
+.mo-lead-list{list-style:none;margin:0;padding:0}
+.mo-lead{display:grid;grid-template-columns:44px 34px 1fr;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #eef1f6}
+.mo-lead:last-child{border-bottom:0}
+.mo-rank{width:44px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:#fff6e5;color:#b26a00;font-size:12px;font-weight:700}
+.mo-rank.is-hot{background:#ffece8;color:#d9452b}
+.mo-logo{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+.mo-lead-info{min-width:0;display:flex;flex-direction:column;gap:2px}
+.mo-lead-info strong{font-size:13px;color:#1f2329}
+.mo-lead-info span{font-size:12px;color:#6b7280}
+.mo-lead-info small{font-size:11px;color:#9aa2ad}
+.mo-lead-info small.has-record{color:#13a06a}
+.mo-change{color:#13a06a}
+.mo-lead-actions{grid-column:3;display:flex;gap:8px;flex-wrap:wrap}
+.mo-detail-link{text-decoration:none;color:#3b65de}
+
+/* ── 外贸客户洞察 ───────────────────────────────── */
+.ti-page{padding:16px 20px 32px;display:flex;flex-direction:column;gap:14px}
+.ti-entry{display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:6px;background:#fff8e8;border:1px solid #f4dfae;font-size:12px;color:#7a5a12}
+.ti-entry a{display:inline-flex;align-items:center;gap:4px;color:#3b65de;text-decoration:none;white-space:nowrap}
+.ti-card{background:#fff;border-radius:6px;padding:16px 20px}
+.ti-card-title{margin:0 0 14px;font-size:16px;font-weight:600;color:#1f2329}
+.ti-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 32px}
+.ti-filter-field{display:grid;grid-template-columns:64px 1fr;align-items:center;font-size:13px;color:#4b5058}
+.ti-filter-field .ui-input{height:32px;border-radius:4px;font-size:13px}
+.ti-date-range{display:flex;align-items:center;gap:6px;height:32px;padding:0 8px;border:1px solid #dce2ec;border-radius:4px;color:#b3b9c2}
+.ti-date-range .ui-input{border:0;height:28px;padding:0 4px;min-width:0;color:#4b5058}
+.ti-date-range i{font-style:normal;color:#4b5058}
+.ti-filter-actions{display:flex;gap:10px;align-items:center}
+.ti-filter-actions .ui-button{height:32px;min-width:62px}
+.ti-chips{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid #eef1f6}
+.ti-chips-label{font-size:12px;color:#8a919c}
+.ti-chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 14px;border-radius:14px;border:0;background:#f2f4f8;color:#4b5058;font-size:12px}
+.ti-chip.is-active{background:#f2f4f8;color:#3b65de}
+.ti-chip button{display:inline-flex;border:0;background:none;padding:0;color:#8a919c}
+.ti-result-title{margin:8px 0 16px;font-size:16px;font-weight:600;color:#1f2329}
+.ti-table-wrap{overflow-x:auto}
+.ti-table{min-width:900px}
+.ti-table thead{background:#f5f6f8}
+.ti-table tbody tr.ti-row{height:auto;background:#fff!important;vertical-align:top}
+.ti-table tbody tr.ti-row:hover{background:#fafbff!important}
+.ti-table tbody tr.ti-row.is-focus{background:#f5f8ff!important;box-shadow:inset 3px 0 #4a75f4}
+.ti-table td{padding-top:16px;padding-bottom:16px}
+.ti-select-col{width:44px}
+.ti-count-col{width:20%}.ti-amount-col{width:14%}.ti-ops-col{width:150px;white-space:nowrap}
+.ti-company-name{font-size:15px;font-weight:700;color:#1f2329}
+.ti-company-role{margin-top:6px;font-size:12px;color:#6b7280}
+.ti-company-detail{margin:14px 0 0;display:flex;flex-direction:column;gap:10px;font-size:12px}
+.ti-company-detail div{display:grid;grid-template-columns:72px 1fr;gap:8px}
+.ti-company-detail dt{color:#6b7280}
+.ti-company-detail dd{margin:0;display:flex;flex-direction:column;gap:4px;color:#30343c}
+.ti-favorite{display:inline-flex;align-items:center;gap:4px}
+.ti-favorite.is-on svg{fill:#f5a623;color:#f5a623}
+.ti-empty{text-align:center;color:#8a919c;padding:36px 12px!important}
+.ti-placeholder{padding:40px 12px;text-align:center;color:#9aa2ad;font-size:13px}
+.ti-detail-dialog{width:640px}
+.ti-detail-body{padding:16px 24px 22px}
+.ti-detail-grid{margin:0 0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ti-detail-grid div{display:flex;flex-direction:column;gap:4px}
+.ti-detail-grid dt{font-size:11px;color:#9aa2ad}.ti-detail-grid dd{margin:0;font-size:13px;color:#1f2329}
+.ti-detail-body h4{margin:0 0 8px;font-size:13px;color:#30343c}
+.ti-shipments{min-width:0}
+
+@media (max-width:1100px){
+  .mo-two-col{grid-template-columns:1fr}
+  .ti-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .customer-nav{display:none}
+  .mo-page,.ti-page{padding:14px 16px 24px}
+  .mo-metrics{grid-template-columns:repeat(2,1fr)}
+  .mo-bar-row{grid-template-columns:72px 1fr 60px}.mo-bar-value{display:none}
+  .ti-filter-grid{grid-template-columns:1fr}
+  .ti-detail-grid{grid-template-columns:1fr 1fr}
+}
+.mo-product-tag.is-readonly{padding:4px 12px}
+.mo-product-edit{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#3b65de;text-decoration:none;margin-left:4px}
+.mo-product-edit:hover{text-decoration:underline}
+.mo-hs-row em.mo-unmatched{color:#a1600a}
+.mo-more{display:inline-flex;align-items:center;gap:2px;font-size:12px;color:#3b65de;text-decoration:none;white-space:nowrap}
+.mo-more:hover{text-decoration:underline}
+.ti-row-match{margin-top:8px;font-size:12px;color:#3b65de}
+.mo-market-tile small+small{color:#b0b6c0}
+.mo-toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);z-index:30;padding:10px 18px;border-radius:6px;background:#1f2937e6;color:#fff;font-size:13px;box-shadow:0 6px 20px #0003}
+/* 产品 ↔ 英文名 ↔ 海关编码 */
+.mo-products-head .mo-product-edit{margin-left:8px}
+.mo-product-table{min-width:0;margin-top:4px;background:#fff;border:1px solid #dce6ff;border-radius:6px}
+.mo-product-table thead{background:#f5f8ff}
+.mo-product-table th{height:34px;font-size:12px}
+.mo-product-table tbody tr{height:44px;background:#fff!important}
+.mo-product-name{font-weight:600;color:#1f2329!important}
+.mo-en-view,.mo-en-edit{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mo-en-edit .ui-input{width:200px;height:28px}
+.mo-en-name{color:#1f2329;font-weight:500}
+.mo-en-empty{color:#adb4c0}
+.mo-en-tag{padding:1px 6px;border-radius:3px;background:#fff1d6;color:#a1600a;font-size:11px}
+.mo-en-action{display:inline-flex;align-items:center;gap:3px}
+.mo-hs-code{color:#2f5bdc;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.mo-hs-name em{font-style:normal;color:#8a919c}

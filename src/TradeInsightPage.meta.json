@@ -1,0 +1,13 @@
+{
+  "page": "TradeInsightPage",
+  "route": "/customer/trade-insight/",
+  "dataSources": [
+    { "name": "mockTradeCompaniesData", "shape": "array", "endpoint": { "method": "GET", "path": "/api/industry-scenario/trade-companies" }, "queryParams": ["startDate", "endDate", "originCountry", "destinationCountry", "exportPort", "importPort", "products", "page", "pageSize"] }
+  ],
+  "actions": [
+    { "handler": "handleFetchTradeCompanies", "endpoint": { "method": "GET", "path": "/api/industry-scenario/trade-companies" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleAddFavoriteCompany", "endpoint": { "method": "POST", "path": "/api/industry-scenario/favorite-companies" }, "requestFrom": "body", "responseShape": "object" },
+    { "handler": "handleRemoveFavoriteCompany", "endpoint": { "method": "DELETE", "path": "/api/industry-scenario/favorite-companies/{id}" }, "requestFrom": "param", "responseShape": "none" },
+    { "handler": "handleFetchTradeCompanyDetail", "endpoint": { "method": "GET", "path": "/api/industry-scenario/trade-companies/{id}" }, "requestFrom": "param", "responseShape": "object" }
+  ]
+}

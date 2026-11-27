@@ -1,0 +1,17 @@
+{
+  "page": "AiSearchPage",
+  "route": "/ai-search/",
+  "dataSources": [
+    {
+      "name": "mockAiSearchSourcesData",
+      "shape": "array",
+      "endpoint": { "method": "GET", "path": "/api/ai-search/sources" },
+      "queryParams": ["appName"]
+    }
+  ],
+  "actions": [
+    { "handler": "handleFetchAiSearchSources", "endpoint": { "method": "GET", "path": "/api/ai-search/sources" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleToggleAiSearchSource", "endpoint": { "method": "PATCH", "path": "/api/ai-search/sources/{id}" }, "requestFrom": "param", "responseShape": "object" },
+    { "handler": "handleBatchUpdateAiSearchSources", "endpoint": { "method": "PATCH", "path": "/api/ai-search/sources/batch" }, "requestFrom": "body", "responseShape": "none" }
+  ]
+}

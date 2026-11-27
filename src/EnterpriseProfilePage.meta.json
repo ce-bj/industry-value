@@ -1,0 +1,73 @@
+{
+  "page": "EnterpriseProfilePage",
+  "route": "/enterprise-profile/",
+  "dataSources": [
+    {
+      "name": "mockEnterpriseProfileData",
+      "shape": "object",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/industry-scenario/enterprise-profile"
+      },
+      "queryParams": []
+    },
+    {
+      "name": "mockWebsiteInfosData",
+      "shape": "array",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/industry-scenario/websites/site-info"
+      },
+      "queryParams": []
+    },
+    {
+      "name": "mockWebsiteStagesData",
+      "shape": "array",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/industry-scenario/website-stages"
+      },
+      "queryParams": [
+        "industry"
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "handler": "handleFetchEnterpriseProfile",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/industry-scenario/enterprise-profile"
+      },
+      "requestFrom": "none",
+      "responseShape": "object"
+    },
+    {
+      "handler": "handleFetchWebsiteInfos",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/industry-scenario/websites/site-info"
+      },
+      "requestFrom": "none",
+      "responseShape": "array"
+    },
+    {
+      "handler": "handleSaveEnterpriseProfile",
+      "endpoint": {
+        "method": "PUT",
+        "path": "/api/industry-scenario/enterprise-profile"
+      },
+      "requestFrom": "body",
+      "responseShape": "object"
+    },
+    {
+      "handler": "handleFetchWebsiteStages",
+      "endpoint": {
+        "method": "GET",
+        "path": "/api/industry-scenario/website-stages"
+      },
+      "requestFrom": "param",
+      "responseShape": "array"
+    }
+  ]
+}

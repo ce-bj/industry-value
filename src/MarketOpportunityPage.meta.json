@@ -1,0 +1,20 @@
+{
+  "page": "MarketOpportunityPage",
+  "route": "/customer/market-opportunity/",
+  "dataSources": [
+    { "name": "mockProductEnglishNamesData", "shape": "array", "endpoint": { "method": "GET", "path": "/api/industry-scenario/main-products/english-names" }, "queryParams": [] },
+    { "name": "mockCustomerPoolData", "shape": "array", "endpoint": { "method": "GET", "path": "/api/industry-scenario/customer-pool" }, "queryParams": ["products"] },
+    { "name": "mockMarketTrendData", "shape": "object", "endpoint": { "method": "GET", "path": "/api/industry-scenario/market-trend" }, "queryParams": ["products"] },
+    { "name": "mockDiscoverCompaniesData", "shape": "array", "endpoint": { "method": "GET", "path": "/api/industry-scenario/company-discovery" }, "queryParams": ["products"] },
+    { "name": "mockCustomsSignalsData", "shape": "array", "endpoint": { "method": "GET", "path": "/api/industry-scenario/customs-signals" }, "queryParams": ["products"] }
+  ],
+  "actions": [
+    { "handler": "handleFetchProductEnglishNames", "endpoint": { "method": "GET", "path": "/api/industry-scenario/main-products/english-names" }, "requestFrom": "none", "responseShape": "array" },
+    { "handler": "handleSaveProductEnglishName", "endpoint": { "method": "PUT", "path": "/api/industry-scenario/main-products/english-name" }, "requestFrom": "body", "responseShape": "object" },
+    { "handler": "handleFetchCustomerPool", "endpoint": { "method": "GET", "path": "/api/industry-scenario/customer-pool" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleFetchMarketTrend", "endpoint": { "method": "GET", "path": "/api/industry-scenario/market-trend" }, "requestFrom": "param", "responseShape": "object" },
+    { "handler": "handleFetchDiscoverCompanies", "endpoint": { "method": "GET", "path": "/api/industry-scenario/company-discovery" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleFetchCustomsSignals", "endpoint": { "method": "GET", "path": "/api/industry-scenario/customs-signals" }, "requestFrom": "param", "responseShape": "array" },
+    { "handler": "handleAddFollowLead", "endpoint": { "method": "POST", "path": "/api/industry-scenario/follow-leads" }, "requestFrom": "body", "responseShape": "object" }
+  ]
+}
